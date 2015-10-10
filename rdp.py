@@ -1,15 +1,33 @@
+#!/usr/bin/env python
+
 import matplotlib.pyplot as plt
 
 def __dist(p1, p2):
+    """
+    Compute squared distance betweeb points
+    :param p1: first point
+    :param p2: second point
+    :return: squared distance
+    """
     return (p1[0] - p2[0])**2 + (p1[1] - p2[1])**2
 
 def __sub(p1, p2):
-    return (p1[0]-p2[0], p1[1]-p2[1])
-
+    """
+    Compute difference between points
+    :param p1: first point
+    :param p2: second point
+    :return: difference point
+    """
+    return p1[0] - p2[0], p1[1] - p2[1]
 
 def __mult(p1, p2):
-    return p1[0]*p2[0] + p1[1]*p2[1]
-
+    """
+    Dot product
+    :param p1:
+    :param p2:
+    :return:
+    """
+    return p1[0] * p2[0] + p1[1] * p2[1]
 
 def ramerdouglas(line, dist):
     """Does Ramer-Douglas-Peucker simplification of a curve with `dist`
@@ -22,7 +40,7 @@ def ramerdouglas(line, dist):
     >>> myline = [(0.0, 0.0), (1.0, 2.0), (2.0, 1.0)]
     >>> simplified = ramerdouglas(myline, dist = 1.0)
     """
-    
+
     if dist == 0.0:
         return line[:]
 
@@ -391,7 +409,6 @@ if __name__ == "__main__":
     ( 3.527037 , 9.066756 ),
     ( 3.498069 , 9.082022 ),
     ( 3.541865 , 9.174211 ),
-
     ( 3.542409 , 9.234411 ),
     ( 3.576275 , 9.262711 ),
     ( 3.582279 , 9.287744 ),
@@ -553,13 +570,12 @@ if __name__ == "__main__":
     ( 0.061935 , 10.867833 ),
     ( 0.000000 , 10.960167 )
     ]
-    
+
     x, y = to_xy(coast)
-    
+
     cst = ramerdouglas(coast, 0.1)
     xx, yy = to_xy(cst)
     print(xx, yy)
-    
-    plt.plot(x, y, "bo", xx, yy, "g^")
-    plt.show()
 
+    plt.plot(x, y, "bo", xx, yy, "r^")
+    plt.show()
