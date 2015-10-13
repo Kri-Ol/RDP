@@ -1,33 +1,84 @@
 #!/usr/bin/env python
 
+            #//new algo to compute the distance
+			#//from the current point to the segment
+			#//defined by P1 and P2
+
+			#float l2 = P1.DistanceSquareToPoint(P2);
+
+			#//maybe do |l2| < epsilon
+			#if (l2 == 0.0f)
+			#{
+			#	return this->DistanceSquareToPoint(P1);
+			#}
+
+			#// closest to this point position along the segment
+			#float t = ((r - P1.r) * (P2.r - P1.r) + (z - P1.z) * (P2.z - P1.z)) / l2;
+
+			#// clamping position along the segment to be within [0...1]
+			#t = std::min( std::max( t, 0.0f), 1.0f );
+
+			#// build on-segment closest tmp point and return distance to it
+			#return DistanceSquareToPoint( zrPoint(P1.z + t*(P2.z-P1.z), P1.r + t*(P2.r-P1.r)) );
+
 import matplotlib.pyplot as plt
 
-def __dist(p1, p2):
+X = 0
+Y = 1
+
+def scale(s, pt):
+    """
+    """
+    return s*pt[X], s*pt[Y]
+
+def dist_squared(p1, p2):
     """
     Compute squared distance betweeb points
     :param p1: first point
     :param p2: second point
     :return: squared distance
     """
-    return (p1[0] - p2[0])**2 + (p1[1] - p2[1])**2
+    return (p1[X] - p2[X])**2 + (p1[Y] - p2[Y])**2
 
-def __sub(p1, p2):
+def sub(p1, p2):
     """
     Compute difference between points
     :param p1: first point
     :param p2: second point
     :return: difference point
     """
-    return p1[0] - p2[0], p1[1] - p2[1]
+    return p1[X] - p2[X], p1[Y] - p2[Y]
 
-def __mult(p1, p2):
+def add(p1, p2):
+    """
+    """
+    return p1[X] + p2[X], p1[Y] + p2[Y]
+
+def dot(p1, p2):
     """
     Dot product
     :param p1:
     :param p2:
     :return:
     """
-    return p1[0] * p2[0] + p1[1] * p2[1]
+    return p1[X] * p2[X] + p1[Y] * p2[Y]
+
+def dist_to_segment(begin, end, curr):
+    """
+    returns shorted squared distance from curr point
+    to segment (begin, end)
+    """
+
+    d2 = dist_squared(begin, end)
+    if d2 == 0.0:
+        return dist_squared(begin, curr)
+    
+    diff  = sub(end, begin)
+    d2beg = sub(curr, begin)
+    
+    t = min(1.0, max(0.0, dot(diff, d2beg) / d2))
+    
+    return dist_squared(add(begin, scale(t, diff)), curr)
 
 def ramerdouglas(line, dist):
     """Does Ramer-Douglas-Peucker simplification of a curve with `dist`
@@ -53,10 +104,9 @@ def ramerdouglas(line, dist):
     maxdist = -1.0
     l = len(line)
     for k in range(1,l):
-        curr = line[k]
-        tmp = __dist(begin, curr) - __mult(__sub(end, begin), __sub(curr, begin)) ** 2 / __dist(begin, end)
-        if tmp > maxdist:
-            maxdist = tmp
+        d2 = dist_to_segment(begin, end, line[k])
+        if d2 > maxdist:
+            maxdist = d2
             pos     = k - 1
 
     if maxdist < dist ** 2:

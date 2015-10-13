@@ -18,7 +18,7 @@ def generate_test():
         y = -math.sqrt(R * R - x * x)
         ptss.append((x, y))
 
-    for k in range(0, 101):
+    for k in range(1, 101):
         x = -R + 0.1 * float(k)
         y = 0.0
         ptss.append((x, y))
@@ -29,4 +29,4 @@ if __name__ == "__main__":
     pts = generate_test()
 
     for pt in pts:
-        print(pt)
+        print(str(pt)+",")
